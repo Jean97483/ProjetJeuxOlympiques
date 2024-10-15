@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Jeux Olympiques de Paris</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'CSS/evenement.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">JO 2024</div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'accueil' %}">Accueil</a></li>
+                <li><a href="{% url 'evenement' %}">Evenements</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'deconnexion' %}">Se déconnecter</a></li>
+                <li class="welcome-message">Bienvenue, {{ user.username }}!</li>
+                {% else %}
+                <li><a href="{% url 'connexion' %}">Se connecter</a></li>
+                <li><a href="{% url 'inscription' %}">S'inscrire</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="offres">
+            <h2>Nos Offres</h2>
+            <label for="sport-select">Choisir un sport :</label>
+            <select id="sport-select">
+                <option value="">Sélectionner un sport</option>
+                {% for sport in sports %}
+                <option value="{{ sport.id }}">{{ sport.nom }}</option>
+                {% endfor %}
+            </select>
+            <div class="cartes-offres">
+                {% for offre in offres %}
+                <div class="carte" data-sport-id="{{ offre.sport.id }}">
+                    <h3>{{ offre.titre }}</h3>
+                    <img src="{{ offre.image.url }}" alt="{{ offre.titre }}">
+                    <p>{{ offre.description }}</p>
+                    <label for="date-select-{{ offre.id }}">Choisir une date :</label>
+                    <select id="date-select-{{ offre.id }}" class="date-select">
+                        <option value="">Sélectionner une date</option>
+                        {% for evenement in offre.evenement_set.all %}
+                        <option value="{{ evenement.id }}">{{ evenement.date }}</option>
+                        {% endfor %}
+                    </select>
+                    <button onclick="ajouterAuPanier('{{ offre.id }}', '{{ offre.titre }}', '{{ offre.sport.nom }}')">Ajouter au panier</button>
+                </div>
+                {% endfor %}
+            </div>     
+        </section>
+        <section class="panier">
+            <h2>Votre Panier</h2>
+            <ul id="panier-liste">
+                <!-- Les billets du panier sont ajoutés ici dynamiquement -->
+            </ul>
+            <div class="total">Total : <span id="panier-total">0</span>€</div>
+            <button class="valider" onclick="validerCommande()">Valider la commande</button>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Jeux Olympiques. Tous droits réservés.</p>
+    </footer>
+    <script src="{% static 'Javascript/evenement.js' %}"></script>
+</body>
+</html>

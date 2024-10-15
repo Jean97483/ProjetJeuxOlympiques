@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Jeux Olympiques de Paris</title>
+    <link rel="stylesheet" href="{% static 'CSS/evenement.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">JO 2024</div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'acceuil' %}">Accueil</a></li>
+                <li><a href="{% url 'evenement' %}">Evenements</a></li>
+                <li><a href="{% url 'seconnecter' %}">Se connecter/S'inscrire</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="offres">
+            <h2>Nos Offres</h2>
+            <div class="cartes-offres">
+                {% for offre in offres %}
+                <div class="carte">
+                    <h3>{{ offre.titre }}</h3>
+                    <img src="{{ offre.image.url }}" alt="{{ offre.titre }}">
+                    <p>{{ offre.description }}</p>
+                    <button onclick="ajouterAuPanier('{{ offre.titre }}')">Ajouter au panier</button>
+                </div>
+                {% endfor %}
+            </div>     
+        </section>
+    </main>
+    <footer>
+        <p>&copy: 2024 Jeux Olympiques. Tous droits réservés.</p>
+    </footer>
+    <script src="{% static 'Javascript/evenement.js' %}"></script>
+</body>
+</html>

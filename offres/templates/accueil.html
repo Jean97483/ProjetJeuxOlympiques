@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Jeux Olympiques de Paris</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'CSS/accueil.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">JO 2024</div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'accueil' %}">Accueil</a></li>
+                <li><a href="{% url 'evenement' %}">Evenements</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'deconnexion' %}">Se déconnecter</a></li>
+                <li class="welcome-message">Bienvenue, {{ user.username }}!</li>
+                {% else %}
+                <li><a href="{% url 'connexion' %}">Se connecter</a></li>
+                <li><a href="{% url 'inscription' %}">S'inscrire</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="accueil" class="description">
+            <h1>Bienvenue au Jeux Olympiques 2024</h1>
+            <p> Rejoignez- nous pour célébrer l'esprit sportif à paris</p>
+        </section>
+
+        <section id="evenements" class="evenement">
+            <h2>Les Evenements</h2>
+            <div class="cartes-evenements">
+                <div class="carte">
+                    <h3>Athlétisme</h3>
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Vero ipsa culpa rem a tenetur minus velit nihil quidem! Iure hic vero atque ad doloremque at, fuga perspiciatis possimus harum placeat.</p>
+                </div>
+                <div class="carte">
+                    <h3>natation</h3>
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Vero ipsa culpa rem a tenetur minus velit nihil quidem! Iure hic vero atque ad doloremque at, fuga perspiciatis possimus harum placeat.</p>
+                </div>
+                <div class="carte">
+                    <h3>Gymnastique</h3>
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Vero ipsa culpa rem a tenetur minus velit nihil quidem! Iure hic vero atque ad doloremque at, fuga perspiciatis possimus harum placeat.</p>
+                </div>
+                <div class="carte">
+                    <h3>Basket</h3>
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Vero ipsa culpa rem a tenetur minus velit nihil quidem! Iure hic vero atque ad doloremque at, fuga perspiciatis possimus harum placeat.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy: 2024 Jeux Olympiques. Tous droits réservés.</p>
+    </footer>
+    <script src="{% static 'Javascript/accueil.js' %}"></script>
+</body>
+</html>
