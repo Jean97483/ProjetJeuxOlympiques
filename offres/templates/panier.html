@@ -30,12 +30,12 @@
             {% for item in panier_items %}
             <li>
                 {{ item.offre.titre }} - {{ item.evenement.date }} - Quantité : {{ item.quantite }}
-                <a href="{% url 'supprimer_du_panier' item.id %}"></a>
+                <a href="{% url 'supprimer_du_panier' item.id %}">Supprimer</a>
             </li>
             {% endif %}
         </ul>
         <div class="total">Total: {{ total }}€</div>
-        <butt class="valider" onclick="valideCommande()">Valider la commande</butt>
+        <butt class="valider" onclick="validerCommande()">Valider la commande</butt>
     </main>
     <footer>
         <p>&copy: 2024 Jeux Olympiques. Tous droits réservés.</p>
