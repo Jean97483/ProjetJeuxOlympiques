@@ -58,6 +58,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.ajouterAuPanier = ajouterAuPanier;
     window.validerCommande = function() {
-        alert('Afin de terminer votre achat, merci de bien vouloir vous connecter !');
+        fetch('/valider_commande/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.status === 403) {
+                //L'utilisateur n'est pas connecté, redirige vers la page de connexion
+                window.location.href = '/connexion/';
+            } else {
+                return response.json();
+            }
+        })
+        .then(data => {
+            if (data.success) {
+                //SI la commande est validée, redirige vers la page panier
+                window.location.href = '/panier/';
+            } else {
+                //Si le panier est vide ou un autre problème est survenu
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la validation de la commande :', error);
+        });
     };
 });
