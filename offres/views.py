@@ -7,6 +7,8 @@ from .models import Offre, Sport, Evenement, Panier
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.http import JsonResponse, HttpResponseRedirect
+
 
 #Vue pour l'inscription
 def register(request):
@@ -40,7 +42,7 @@ def evenement(request):
 def panier(request):
     panier_items = Panier.objects.filter(user=request.user)
     total = sum(item.offre.prix * item.quantite for item in panier_items)
-    return render(request, 'panier.html', {'panier_item': panier_items, 'total': total})
+    return render(request, 'panier.html', {'panier_items': panier_items, 'total': total})
 
 @login_required
 def ajouter_au_panier(request, offre_id, evenement_id):
@@ -58,3 +60,13 @@ def supprimer_du_panier(request, panier_item_id):
     if panier_item.user == request.user:
         panier_item.delete()
     return redirect('panier')
+
+@login_required
+def valider_commande(request):
+    #Vérifie que le panier n'est pas vide
+    panier_items = Panier.objects.filter(user=request.user)
+    if not panier_items.exists():
+        return JsonResponse({'success': False, 'message': 'Votre panier est vide.'})
+    
+    #Si le panier n'est pas vide, rediriger vers la page panier
+    return HttpResponseRedirect(reverse('panier'))

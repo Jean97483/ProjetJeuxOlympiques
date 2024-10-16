@@ -32,4 +32,4 @@ class Panier(models.Model):
     quantite = models.PositiveIntegerField(default=1)
 
     def __str__ (self):
-        return f"{self.offre.titre} - {self.evenemment.date} - {self.quantite}"
+        return f"{self.offre.titre} - {self.evenement.date} - {self.quantite}"
