@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-1!nzbbv0p99mi(0upe@+mtiez!mp^oxxyo#$s#f51y$0hs=6d0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['BeonelJean.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'JeuxOlympiques.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'olympics',
-        'USER': 'root',
+        'NAME': 'BeonelJean$JeuxOlympiques_DB',
+        'USER': 'BeonelJean',
         'PASSWORD': 'Jesusjetesuis974!',
-        'HOST': 'localhost',
+        'HOST': 'BeonelJean.mysql.pythonanywhere-services.com',
         'PORT': '3306'
     }
 }
@@ -124,10 +124,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+#Pour accéder aux fichiers statiques
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+#Chemin où collecter les fichiers statiques
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+#Dossier contenant les fichiers statiques de l'application (avant collecte)
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+
 
 #Media files (Uploaded files)
 MEDIA_URL = '/media/'
