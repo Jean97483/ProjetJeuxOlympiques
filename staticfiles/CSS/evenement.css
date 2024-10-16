@@ -36,9 +36,10 @@ nav ul li a {
 }
 
 .cartes-offres {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);  /* Crée 3 colonnes de largeur égale */
     gap: 2rem;
+    justify-items: center;
 }
 
 .carte {
