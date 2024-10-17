@@ -69,4 +69,4 @@ def valider_commande(request):
         return JsonResponse({'success': False, 'message': 'Votre panier est vide.'})
     
     #Si le panier n'est pas vide, rediriger vers la page panier
-    return JsonResponse({'success': True, 'message': 'Commande validée'})
+    return JsonResponse({'success': True, 'redirect_url': reverse('panier')})

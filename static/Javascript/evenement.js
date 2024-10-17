@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.ajouterAuPanier = ajouterAuPanier;
     window.validerCommande = function() {
-        fetch('/valider_commande/', {
+        fetch('/panier/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 //SI la commande est validée, redirige vers la page panier
-                window.location.href = '/panier/';
+                window.location.href = data.redirect_url;
             } else {
                 //Si le panier est vide ou un autre problème est survenu
                 alert(data.message);
