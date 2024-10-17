@@ -7,6 +7,7 @@ from django.contrib.auth.views import LogoutView
 urlpatterns = [
     path('', views.accueil, name='accueil'),
     path('evenement/', views.evenement, name='evenement'),
+    path('valider_commande/', views.valider_commande, name='valider_commande'),
     path('panier/', panier, name='panier'),
     path('ajouter_au_panier/<int:offre_id>/<int:evenement_id>/', ajouter_au_panier, name='ajouter_au_panier'),
     path('supprimer_du_panier/<int:panier_item_id>/', supprimer_du_panier, name='supprimer_du_panier'),
