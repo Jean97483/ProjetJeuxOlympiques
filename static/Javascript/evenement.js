@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.ajouterAuPanier = ajouterAuPanier;
     window.validerCommande = function() {
-        fetch('/panier/', {
+        fetch('/valider_commande/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
