@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'CSS/login.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">JO 2024</div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'accueil' %}">Accueil</a></li>
+                <li><a href="{% url 'evenement' %}">Evenements</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'deconnexion' %}">Se déconnecter</a></li>
+                <li class="welcome-message">Bienvenue, {{ user.username }}!</li>
+                {% else %}
+                <li><a href="{% url 'connexion' %}">Se connecter</a></li>
+                <li><a href="{% url 'inscription' %}">S'inscrire</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Connexion</h2>
+        <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Se connecter</button>
+    </form>
+    <p>Pas encore inscrit ? <a href="{% url 'register' %}">S'inscrire</a></p>
+    </main>
+    
+    
+    <footer>
+        <p>&copy: 2024 Jeux Olympiques. Tous droits réservés.</p>
+    </footer>
+    <script src="{% static 'Javascript/accueil.js' %}"></script>
+</body>
+</html>
