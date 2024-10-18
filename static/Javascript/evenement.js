@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then(response => {
                     console.log(`Status: ${response.status}`);
+                    if (response.redirected) {
+                        windows.location.href = response.url;
+                        return;
+                    }
                     return response.json();
                 })
                 .then(data => {

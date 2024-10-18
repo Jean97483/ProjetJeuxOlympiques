@@ -22,11 +22,11 @@ def register(request):
             return redirect('accueil')
     else:
         form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'users/register.html', {'form': form})
 
 #Vue pour la connexion personnalisée
 class CustomLoginView(LoginView):
-    template_name = 'login.html'
+    template_name = 'users/login.html'
 
 def custom_logout_view(request):
     logout(request)
@@ -46,7 +46,7 @@ def panier(request):
     total = sum(item.offre.prix * item.quantite for item in panier_items)
     return render(request, 'panier.html', {'panier_items': panier_items, 'total': total})
 
-@login_required
+
 @require_POST # Assure que la requête est de type POST
 def ajouter_au_panier(request, offre_id, evenement_id):
     try:
