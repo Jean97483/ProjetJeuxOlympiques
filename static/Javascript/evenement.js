@@ -102,22 +102,23 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch('/valider_commande/', {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
             .then(response => {
-                if (response.status === 403) {
+                if (response.redirected) {
                     //L'utilisateur n'est pas connecté, redirige vers la page de connexion
-                    window.location.href = '/connexion/';
+                    window.location.href = data.redirect_url;
                 } else {
                     return response.json();
                 }
             })
             .then(data => {
-                if (data.success) {
+                if (data && data.success) {
                     //SI la commande est validée, redirige vers la page panier
                     window.location.href = data.redirect_url;
-                } else {
+                } else if (data && data.message) {
                     //Si le panier est vide ou un autre problème est survenu
                     alert(data.message);
                 }
