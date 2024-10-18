@@ -32,7 +32,7 @@
                 {{ item.offre.titre }} - {{ item.evenement.date }} - Quantité : {{ item.quantite }}
                 <a href="{% url 'supprimer_du_panier' item.id %}">Supprimer</a>
             </li>
-            {% endif %}
+            {% endfor %}
         </ul>
         <div class="total">Total: {{ total }}€</div>
         <butt class="valider" onclick="validerCommande()">Valider la commande</butt>
