@@ -18,12 +18,8 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(`Offfre ID: ${offreId}, Date sélectionnée: ${selectedDate}`);
 
         if (selectedDate) {
-            //Vérif
-            const url = `/ajouter_au_panier/${offreId}/${selectedDate}/`;
-            console.log(`URL générée: ${url}`);
-
             //Envoyer une requête AJAX au serveur pour ajouter l'élément au panier
-            fetch(url, {
+            fetch(`/ajouter_au_panier/${offreId}/${selectedDate}/`, {
                 method: 'POST', //Utilisation de la methode post pour plus de sécurité
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,14 +28,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify({ offreId: offreId, evenementId: selectedDate })
             })
                 .then(response => {
-                    console.log(response);
-                    if (response.redirected) {
-                        window.location.href = response.url;
-                        return;
-                    }
+                    console.log(`Status: ${response.status}`);
                     return response.json();
                 })
                 .then(data => {
+                    console.log("réponse du serveur:", data);
                     if (data.success) {
                         alert("L'offre a été ajoutée au panier.");
                         //Mettre à jour l'interface utilisateur si nécessaire
