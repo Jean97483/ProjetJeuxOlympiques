@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (selectedDate) {
             //Envoyer une requête AJAX au serveur pour ajouter l'élément au panier
-            fetch('ajouter_au_panier/${offreId}/${selectedDate}/', {
+            fetch(`/ajouter_au_panier/${offreId}/${selectedDate}/`, {
                 method: 'POST', //Utilisation de la methode post pour plus de sécurité
                 headers: {
                     'Content-Type': 'application/json',
@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //Fonction pour gérer l'ajout coté client
     function ajouterAuPanierClient(offreId, offreTitre, sportNom) {
-            var panierList = document.getElementById('panier-liste');
+        var dateSelect = document.getElementById('date-select-' + offreId);    
+        var panierList = document.getElementById('panier-liste');
             if (panierList) {
                 var li = document.createElement('li');
                 li.setAttribute('data-offre-id', offreId);
@@ -109,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => {
                 if (response.redirected) {
                     //L'utilisateur n'est pas connecté, redirige vers la page de connexion
-                    window.location.href = data.redirect_url;
+                    window.location.href = response.url;
                 } else {
                     return response.json();
                 }
