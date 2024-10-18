@@ -1,7 +1,7 @@
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('sport-select').addEventListener('change', function() {
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('sport-select').addEventListener('change', function () {
         var selectedSport = this.value;
-        document.querySelectorAll('.carte').forEach(function(carte) {
+        document.querySelectorAll('.carte').forEach(function (carte) {
             if (selectedSport === '' || carte.getAttribute('data-sport-id') === selectedSport) {
                 carte.style.display = 'block';
             } else {
@@ -13,18 +13,46 @@ document.addEventListener('DOMContentLoaded', function() {
     function ajouterAuPanier(offreId, offreTitre, sportNom) {
         var dateSelect = document.getElementById('date-select-' + offreId);
         var selectedDate = dateSelect.value;
+
         if (selectedDate) {
+            //Envoyer une requête AJAX au serveur pour ajouter l'élément au panier
+            fetch('ajouter_au_panier/${offreId}/${selectedDate}/', {
+                method: 'POST', //Utilisation de la methode post pour plus de sécurité
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ offreId: offreId, evenementId: selectedDate })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("L'offre a été ajoutée au panier.");
+                        //Mettre à jour l'interface utilisateur si nécessaire
+                        ajouterAuPanierClient(offreId, offreId, sportNom, selectedDate);
+                    } else {
+                        alert(data.message || "Erreur lors de l'ajout au panier.");
+                    }
+                })
+                .catch(error => console.error('Erreur lors de la reqête AJAX :', error));
+        } else {
+            alert('Veuillez sélectionner une date.');
+        }
+    }
+
+    //Fonction pour gérer l'ajout coté client
+    function ajouterAuPanierClient(offreId, offreTitre, sportNom) {
             var panierList = document.getElementById('panier-liste');
             if (panierList) {
                 var li = document.createElement('li');
                 li.setAttribute('data-offre-id', offreId);
                 li.setAttribute('data-date-id', selectedDate);
                 li.textContent = offreTitre + ' - ' + sportNom + ' - ' + dateSelect.options[dateSelect.selectedIndex].text;
-                
+
                 var removeButton = document.createElement('button');
                 removeButton.textContent = 'Supprimer';
                 removeButton.style.marginLeft = '10px';
-                removeButton.onclick = function() {
+                removeButton.onclick = function () {
                     supprimerDuPanier(li);
                 };
 
@@ -34,9 +62,22 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 console.error('Panier non trouvé.');
             }
-        } else {
-            alert('Veuillez sélectionner une date.');
+    }
+
+    //Fonction pour obtenir le CSRF Token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
+        return cookieValue;
     }
 
     function supprimerDuPanier(element) {
@@ -57,32 +98,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.ajouterAuPanier = ajouterAuPanier;
-    window.validerCommande = function() {
+    window.validerCommande = function () {
         fetch('/valider_commande/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => {
-            if (response.status === 403) {
-                //L'utilisateur n'est pas connecté, redirige vers la page de connexion
-                window.location.href = '/connexion/';
-            } else {
-                return response.json();
-            }
-        })
-        .then(data => {
-            if (data.success) {
-                //SI la commande est validée, redirige vers la page panier
-                window.location.href = data.redirect_url;
-            } else {
-                //Si le panier est vide ou un autre problème est survenu
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Erreur lors de la validation de la commande :', error);
-        });
+            .then(response => {
+                if (response.status === 403) {
+                    //L'utilisateur n'est pas connecté, redirige vers la page de connexion
+                    window.location.href = '/connexion/';
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data.success) {
+                    //SI la commande est validée, redirige vers la page panier
+                    window.location.href = data.redirect_url;
+                } else {
+                    //Si le panier est vide ou un autre problème est survenu
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la validation de la commande :', error);
+            });
     };
 });

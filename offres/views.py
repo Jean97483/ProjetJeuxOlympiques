@@ -7,7 +7,9 @@ from .models import Offre, Sport, Evenement, Panier
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
 
 
 #Vue pour l'inscription
@@ -45,14 +47,21 @@ def panier(request):
     return render(request, 'panier.html', {'panier_items': panier_items, 'total': total})
 
 @login_required
+@require_POST # Assure que la requête est de type POST
 def ajouter_au_panier(request, offre_id, evenement_id):
-    offre = Offre.objects.get(id=offre_id)
-    evenement = Evenement.objects.get(id=evenement_id)
-    panier_item, created = Panier.objects.get_or_create(user=request.user, offre=offre, evenement=evenement)
-    if not created:
-        panier_item.quantite += 1
-        panier_item.save()
-    return redirect('panier')
+    try:
+        offre = get_object_or_404(Offre, id=offre_id)
+        evenement = get_object_or_404(Evenement, id=evenement_id)
+
+        #Ajouter l'élément au modèle panier
+        panier_item, created = Panier.objects.get_or_create(user=request.user, offre=offre, evenement=evenement)
+        if not created:
+            panier_item.quantite += 1
+            panier_item.save()
+
+        return JsonResponse({'success': True, 'message': 'Ajoute au panier'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
 
 @login_required
 def supprimer_du_panier(request, panier_item_id):
