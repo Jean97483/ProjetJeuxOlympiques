@@ -42,8 +42,21 @@ def evenement(request):
 # Autres vues
 @login_required
 def panier(request):
-    panier_items = Panier.objects.filter(user=request.user)
-    total = sum(item.offre.prix * item.quantite for item in panier_items)
+    if request.user.is_authenticated:
+        #Pour les utilisateurs connectés
+        panier_items = Panier.objects.filter(user=request.user)
+        total = sum(item.offre.prix * item.quantite for item in panier_items)
+    else:
+        #Pour les utilisateurs non connectés
+        session_panier = request.session.get('panier', {})
+        panier_items = []
+        total = 0
+        for key, value in session_panier.items():
+            offre = get_object_or_404(Offre, id=value['offre_id'])
+            evenement = get_object_or_404(Evenement, id=value['evenement_id'])
+            quantite = value['quantite']
+            total += offre.prix * quantite
+            panier_items.append({'offre': offre, 'evenement': evenement, 'quantite': quantite})
     return render(request, 'panier.html', {'panier_items': panier_items, 'total': total})
 
 
@@ -53,11 +66,29 @@ def ajouter_au_panier(request, offre_id, evenement_id):
         offre = get_object_or_404(Offre, id=offre_id)
         evenement = get_object_or_404(Evenement, id=evenement_id)
 
-        #Ajouter l'élément au modèle panier
-        panier_item, created = Panier.objects.get_or_create(user=request.user, offre=offre, evenement=evenement)
-        if not created:
-            panier_item.quantite += 1
-            panier_item.save()
+        # Vérifie si l'utilisateur est authentifié
+        if request.user.is_authenticated:
+            # Utilisateur connecté est associer au panier de l'utilisateur
+            panier_item, created = Panier.objects.get_or_create(user=request.user, offre=offre, evenement=evenement)
+            if not created:
+                panier_item.quantite += 1
+                panier_item.save()
+        else:
+            # Utilisateur non conecté - utiliser le session ID comme identifiant unique
+            panier = request.session.get('panier', {})
+            key = f"{offre_id}-{evenement_id}"
+
+            if key in panier:
+                panier[key]['quantite'] += 1
+            else:
+                panier[key] = {
+                    'offre_id': offre_id,
+                    'evenement_id': evenement_id,
+                    'quantite': 1
+                }
+            
+            #Mettre à jour la session
+            request.session['panier'] = panier
 
         return JsonResponse({'success': True, 'message': 'Ajoute au panier'})
     except Exception as e:
@@ -70,7 +101,7 @@ def supprimer_du_panier(request, panier_item_id):
         panier_item.delete()
     return redirect('panier')
 
-@login_required
+@login_required(login_url='/users/login/')
 def valider_commande(request):
     #Vérifie que le panier n'est pas vide
     panier_items = Panier.objects.filter(user=request.user)
