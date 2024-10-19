@@ -24,6 +24,7 @@ class Offre(models.Model):
     image = models.ImageField(upload_to='images/')
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
     types_offre = models.ManyToManyField(TypeOffre)
+    prix = models.DecimalField(max_digits=10, decimal_places=2, default=10.00)
 
     def __str__(self):
         return self.titre
