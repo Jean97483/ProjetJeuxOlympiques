@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Filtre des sports
     document.getElementById('sport-select').addEventListener('change', function () {
         var selectedSport = this.value;
         document.querySelectorAll('.carte').forEach(function (carte) {
@@ -10,22 +11,38 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    function ajouterAuPanier(offreId, offreTitre, sportNom) {
+    //Gestion du type d'offre
+    let selectedTypeOffre = null;
+
+    document.querySelectorAll('#type-offre-select').forEach(function(selectElement) {
+        selectElement.addEventListener('change', function() {
+            selectedTypeOffre = this.value;
+        });
+    });
+
+    // Fonction pour ajouter un article au panier
+    function ajouterAuPanier(offreId, offreTitre, sportNom, dateId) {
+        if (!selectedTypeOffre) {
+            alert('Veuillez sélectionner un type d\'offre.');
+            return;
+        }
+
         var dateSelect = document.getElementById('date-select-' + offreId);
         var selectedDate = dateSelect.value;
 
+        
         //Vérif 
-        console.log(`Offfre ID: ${offreId}, Date sélectionnée: ${selectedDate}`);
+        console.log(`Offfre ID: ${offreId}, Date sélectionnée: ${selectedDate}, Type Offre ID: ${selectedTypeOffre}`);
 
         if (selectedDate) {
             //Envoyer une requête AJAX au serveur pour ajouter l'élément au panier
-            fetch(`/ajouter_au_panier/${offreId}/${selectedDate}/`, {
+            fetch(`/ajouter_au_panier/${offreId}/${selectedDate}/${selectedTypeOffre}/`, {
                 method: 'POST', //Utilisation de la methode post pour plus de sécurité
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
                 },
-                body: JSON.stringify({ offreId: offreId, evenementId: selectedDate })
+                body: JSON.stringify({ offreId: offreId, evenementId: selectedDate, typeOffreId: selectedTypeOffre })
             })
                 .then(response => {
                     console.log(`Status: ${response.status}`);
@@ -40,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.success) {
                         alert("L'offre a été ajoutée au panier.");
                         //Mettre à jour l'interface utilisateur si nécessaire
-                        ajouterAuPanierClient(offreId, offreId, sportNom, selectedDate);
+                        ajouterAuPanierClient(offreId, selectedTypeOffre, sportNom, selectedDate);
                     } else {
                         alert(data.message || "Erreur lors de l'ajout au panier.");
                     }

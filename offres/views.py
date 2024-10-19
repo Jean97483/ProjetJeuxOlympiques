@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
-from .models import Offre, Sport, Evenement, Panier
+from .models import Offre, Sport, Evenement, Panier, TypeOffre
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -38,7 +38,12 @@ def accueil(request):
 def evenement(request):
     offres = Offre.objects.all()
     sports = Sport.objects.all()
-    return render(request, 'evenements.html', {'offres': offres, 'sports': sports})
+    types_offres = TypeOffre.objects.all()
+    return render(request, 'evenements.html', {
+        'offres': offres, 
+        'sports': sports,
+        'types_offres': types_offres,
+        })
 # Autres vues
 @login_required
 def panier(request):
@@ -61,15 +66,21 @@ def panier(request):
 
 
 @require_POST # Assure que la requête est de type POST
-def ajouter_au_panier(request, offre_id, evenement_id):
+def ajouter_au_panier(request, offre_id, evenement_id, type_offre_id):
     try:
         offre = get_object_or_404(Offre, id=offre_id)
         evenement = get_object_or_404(Evenement, id=evenement_id)
+        type_offre = get_object_or_404(TypeOffre, id=type_offre_id)
 
         # Vérifie si l'utilisateur est authentifié
         if request.user.is_authenticated:
             # Utilisateur connecté est associer au panier de l'utilisateur
-            panier_item, created = Panier.objects.get_or_create(user=request.user, offre=offre, evenement=evenement)
+            panier_item, created = Panier.objects.get_or_create(
+                user=request.user, 
+                offre=offre, 
+                evenement=evenement,
+                defaults={'quantite': 1, 'prix': type_offre.prix}
+                )
             if not created:
                 panier_item.quantite += 1
                 panier_item.save()

@@ -40,6 +40,14 @@
                     <h3>{{ offre.titre }}</h3>
                     <img src="{{ offre.image.url }}" alt="{{ offre.titre }}">
                     <p>{{ offre.description }}</p>
+                    <label for="type-offre-select">Choisir un type d'offre :</label>
+                    <select id="type-offre-select">
+                        <option value="">Sélectionner une option</option>
+                        {% for type_offre in types_offres %}
+                        <option value="{{ type_offre.id }}">{{ type_offre.nom }} - {{ type_offre.prix }}€</option>
+                        {% endfor %}
+                    </select>
+
                     <label for="date-select-{{ offre.id }}">Choisir une date :</label>
                     <select id="date-select-{{ offre.id }}" class="date-select">
                         <option value="">Sélectionner une date</option>
@@ -47,7 +55,7 @@
                         <option value="{{ evenement.id }}">{{ evenement.date }}</option>
                         {% endfor %}
                     </select>
-                    <button onclick="ajouterAuPanier('{{ offre.id }}', '{{ offre.titre }}', '{{ offre.sport.nom }}')">Ajouter au panier</button>
+                    <button onclick="ajouterAuPanier('{{ offre.id }}', '{{ offre.titre }}', '{{ offre.sport.nom }}', '{{ type_offre.nom }}')">Ajouter au panier</button>
                 </div>
                 {% endfor %}
             </div>     

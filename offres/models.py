@@ -9,18 +9,28 @@ class Sport(models.Model):
     def __str__(self):
         return self.nom
 
+class TypeOffre(models.Model):
+    nom = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    Prix = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.nom
+
+
 class Offre(models.Model):
     titre = models.CharField(max_length=100)
     description = models.TextField()
     image = models.ImageField(upload_to='images/')
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
-    prix = models.DecimalField(max_digits=10, decimal_places=2, default=10.00)
+    evenement = models.ForeignKey('Evenement', on_delete=models.CASCADE, related_name='offres', default=1)
+    types_offre = models.ManyToManyField(TypeOffre)
 
     def __str__(self):
         return self.titre
 
 class Evenement(models.Model):
-    offre = models.ForeignKey(Offre, on_delete=models.CASCADE)
+    offre = models.ForeignKey(Offre, on_delete=models.CASCADE, related_name='evenements')
     date = models.DateField()
 
     def __str__(self):
