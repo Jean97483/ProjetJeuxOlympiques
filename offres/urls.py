@@ -14,6 +14,7 @@ urlpatterns = [
     path('inscription/', register, name='inscription'),
     path('connexion/', CustomLoginView.as_view(), name='connexion'),
     path('deconnexion/', custom_logout_view, name='deconnexion'),
+    path('paiement/', views.paiement, name='paiement'),
 
 ]
 
