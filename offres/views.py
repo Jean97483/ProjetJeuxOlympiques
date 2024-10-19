@@ -39,10 +39,12 @@ def evenement(request):
     offres = Offre.objects.all()
     sports = Sport.objects.all()
     types_offres = TypeOffre.objects.all()
+    evenements = Evenement.objects.select_related('offre').all()
     return render(request, 'evenements.html', {
         'offres': offres, 
         'sports': sports,
         'types_offres': types_offres,
+        'evenements': evenements,
         })
 # Autres vues
 @login_required

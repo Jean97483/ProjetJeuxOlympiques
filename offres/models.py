@@ -23,7 +23,6 @@ class Offre(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='images/')
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
-    evenement = models.ForeignKey('Evenement', on_delete=models.CASCADE, related_name='offres', default=1)
     types_offre = models.ManyToManyField(TypeOffre)
 
     def __str__(self):
