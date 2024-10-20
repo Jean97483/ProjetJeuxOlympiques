@@ -59,7 +59,7 @@
                         {% endfor %}
                     </select>
 
-                    <button onclick="ajouterAuPanier('{{ offre.id }}', 'Titre', 'Sport')">Ajouter au panier</button>
+                    <button onclick="ajouterAuPanier('{{ offre.id }}', '{{ evenement.id }}', '{{ type_offre.id }}')">Ajouter au panier</button>
                 </div>
                 {% endfor %}
             </div>     
