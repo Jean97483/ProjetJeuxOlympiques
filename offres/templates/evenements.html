@@ -41,16 +41,19 @@
                     <img src="{{ offre.image.url }}" alt="{{ offre.titre }}">
                     <p>{{ offre.description }}</p>
 
-                    <label for="type-offre-select-{{ offre.id }}">Choisir un type d'offre :</label>
-                    <select id="type-offre-select-{{ offre.id }}">
+                    <form action="{% url 'ajouter_au_panier' offre.id 0 0 %}" method="post">
+                        {% csrf_token %}
+
+                        <label for="type-offre-select">Choisir un type d'offre :</label>
+                    <select name="type_offre" required>
                         <option value="">Sélectionner une option</option>
-                        {% for type_offre in offre.types_offre.all %}
+                        {% for type_offre in types_offres %}
                         <option value="{{ type_offre.id }}">{{ type_offre.nom }} - {{ type_offre.prix }}€</option>
                         {% endfor %}
                     </select>
 
                     <label for="date-select-{{ offre.id }}">Choisir une date :</label>
-                    <select id="date-select-{{ offre.id }}" class="date-select">
+                    <select name="evenement_id" required>
                         <option value="">Sélectionner une date</option>
                         {% for evenement in evenements %}
                             {% if evenement.offre.id == offre.id %}
@@ -59,7 +62,10 @@
                         {% endfor %}
                     </select>
 
-                    <button onclick="ajouterAuPanier('{{ offre.id }}')">Ajouter au panier</button>
+                    <input type="hidden" name="offre_id" value="{{ offre.id }}">
+                    <button type="submit">Ajouter au panier</button>
+
+                    </form>
                 </div>
                 {% endfor %}
             </div>     

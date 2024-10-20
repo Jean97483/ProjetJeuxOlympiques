@@ -72,8 +72,14 @@ def panier(request):
 
 
 @require_POST # Assure que la requête est de type POST
-def ajouter_au_panier(request, offre_id, evenement_id, type_offre_id):
+def ajouter_au_panier(request):
     try:
+        #Extraire les données du formulaire POST
+        offre_id = request.POST.get('offre_id')
+        evenement_id = request.POST.get('evenement_id')
+        type_offre_id = request.POST.get('type_offre')
+
+        # Vérifier les objets liés aux IDs
         offre = get_object_or_404(Offre, id=offre_id)
         evenement = get_object_or_404(Evenement, id=evenement_id)
         type_offre = get_object_or_404(TypeOffre, id=type_offre_id)
@@ -107,9 +113,10 @@ def ajouter_au_panier(request, offre_id, evenement_id, type_offre_id):
             #Mettre à jour la session
             request.session['panier'] = panier
 
-        return JsonResponse({'success': True, 'message': 'Ajoute au panier'})
+        # Redirection après ajout au panier
+        return redirect('panier')
     except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
+        return redirect('evenement')
 
 @login_required
 def supprimer_du_panier(request, panier_item_id):
