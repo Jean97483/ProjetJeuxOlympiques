@@ -21,16 +21,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Fonction pour ajouter un article au panier
-    function ajouterAuPanier(offreId, offreTitre, sportNom, dateId) {
+    function ajouterAuPanier(offreId, offreTitre, sportNom, selectedTypeOffre) {
         if (!selectedTypeOffre) {
             alert('Veuillez sélectionner un type d\'offre.');
             return;
         }
 
         var dateSelect = document.getElementById('date-select-' + offreId);
-        var selectedDate = dateSelect.value;
+        if (!dateSelect) {
+            alert('Veuillez sélectionner une date valide.');
+            return;
+        }
 
-        
+        var selectedDate = dateSelect.value;
         //Vérif 
         console.log(`Offfre ID: ${offreId}, Date sélectionnée: ${selectedDate}, Type Offre ID: ${selectedTypeOffre}`);
 
@@ -47,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => {
                     console.log(`Status: ${response.status}`);
                     if (response.redirected) {
-                        windows.location.href = response.url;
+                        window.location.href = response.url;
                         return;
                     }
                     return response.json();
