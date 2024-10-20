@@ -42,6 +42,7 @@ class Panier(models.Model):
     offre = models.ForeignKey(Offre, on_delete=models.CASCADE)
     evenement = models.ForeignKey(Evenement, on_delete=models.CASCADE)
     quantite = models.PositiveIntegerField(default=1)
+    prix = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
     def __str__ (self):
         return f"{self.offre.titre} - {self.evenement.date} - {self.quantite}"

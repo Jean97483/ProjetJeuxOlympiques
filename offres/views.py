@@ -107,7 +107,8 @@ def ajouter_au_panier(request):
                 panier[key] = {
                     'offre_id': offre_id,
                     'evenement_id': evenement_id,
-                    'quantite': 1
+                    'quantite': 1,
+                    'prix': float(type_offre.prix)
                 }
             
             #Mettre à jour la session
