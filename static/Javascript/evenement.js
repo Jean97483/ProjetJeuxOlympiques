@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Fonction pour ajouter un article au panier
     function ajouterAuPanier(offreId) {
         // Récupérer le type d'offre sélectionné
-        var typeOffreSelect = document.querySelector(`#type-offre-select`);
+        var typeOffreSelect = document.querySelector(`#type-offre-select-${offreId}`);
         var selectedTypeOffre = typeOffreSelect ? typeOffreSelect.value : null;
 
         //Vérifier si un type d'offre est sélectionné
