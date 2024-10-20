@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Fonction pour ajouter un article au panier
     function ajouterAuPanier(offreId) {
         // Récupérer le type d'offre sélectionné
-        var typeOffreSelect = document.querySelector(`#type-offre-select-${offreId}`);
+        var typeOffreSelect = document.getElementById('type-offre-select-' + offreId);
         var selectedTypeOffre = typeOffreSelect ? typeOffreSelect.value : null;
 
         //Vérifier si un type d'offre est sélectionné
@@ -52,14 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: JSON.stringify({ offreId: offreId, evenementId: selectedDate, typeOffreId: selectedTypeOffre })
             })
-                .then(response => {
-                    console.log(`Status: ${response.status}`);
-                    if (response.redirected) {
-                        window.location.href = response.url;
-                        return;
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     console.log("réponse du serveur:", data);
                     if (data.success) {
