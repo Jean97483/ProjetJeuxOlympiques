@@ -21,20 +21,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Fonction pour ajouter un article au panier
-    function ajouterAuPanier(offreId, offreTitre, sportNom, selectedTypeOffre) {
+    function ajouterAuPanier(offreId) {
+        // Récupérer le type d'offre sélectionné
+        var typeOffreSelect = document.querySelector(`#type-offre-select`);
+        var selectedTypeOffre = typeOffreSelect ? typeOffreSelect.value : null;
+
+        //Vérifier si un type d'offre est sélectionné
         if (!selectedTypeOffre) {
             alert('Veuillez sélectionner un type d\'offre.');
             return;
         }
 
+        //Récuperer la date sélectionné
         var dateSelect = document.getElementById('date-select-' + offreId);
         if (!dateSelect) {
             alert('Veuillez sélectionner une date valide.');
             return;
         }
-
         var selectedDate = dateSelect.value;
-        //Vérif 
+        //Vérification des données
         console.log(`Offfre ID: ${offreId}, Date sélectionnée: ${selectedDate}, Type Offre ID: ${selectedTypeOffre}`);
 
         if (selectedDate) {
@@ -60,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.success) {
                         alert("L'offre a été ajoutée au panier.");
                         //Mettre à jour l'interface utilisateur si nécessaire
-                        ajouterAuPanierClient(offreId, selectedTypeOffre, sportNom, selectedDate);
+                        ajouterAuPanierClient(offreId, selectedTypeOffre);
                     } else {
                         alert(data.message || "Erreur lors de l'ajout au panier.");
                     }

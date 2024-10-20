@@ -41,10 +41,10 @@
                     <img src="{{ offre.image.url }}" alt="{{ offre.titre }}">
                     <p>{{ offre.description }}</p>
 
-                    <label for="type-offre-select">Choisir un type d'offre :</label>
-                    <select id="type-offre-select">
+                    <label for="type-offre-select-{{ offre.id }}">Choisir un type d'offre :</label>
+                    <select id="type-offre-select-{{ offre.id }}">
                         <option value="">Sélectionner une option</option>
-                        {% for type_offre in types_offres %}
+                        {% for type_offre in offre.types_offre.all %}
                         <option value="{{ type_offre.id }}">{{ type_offre.nom }} - {{ type_offre.prix }}€</option>
                         {% endfor %}
                     </select>
@@ -59,7 +59,7 @@
                         {% endfor %}
                     </select>
 
-                    <button onclick="ajouterAuPanier('{{ offre.id }}', '{{ evenement.id }}', '{{ type_offre.id }}')">Ajouter au panier</button>
+                    <button onclick="ajouterAuPanier('{{ offre.id }}')">Ajouter au panier</button>
                 </div>
                 {% endfor %}
             </div>     
