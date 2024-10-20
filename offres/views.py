@@ -113,10 +113,9 @@ def ajouter_au_panier(request):
             #Mettre à jour la session
             request.session['panier'] = panier
 
-        # Redirection après ajout au panier
-        return redirect('panier')
+        return JsonResponse({'success': True, 'message': 'Ajouté au panier'})
     except Exception as e:
-        return redirect('evenement')
+        return JsonResponse({'success': False, 'message': str(e)})
 
 @login_required
 def supprimer_du_panier(request, panier_item_id):

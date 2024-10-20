@@ -41,29 +41,33 @@
                     <img src="{{ offre.image.url }}" alt="{{ offre.titre }}">
                     <p>{{ offre.description }}</p>
 
-                    <form action="{% url 'ajouter_au_panier' offre.id 0 0 %}" method="post">
+                    <form action="{% url 'ajouter_au_panier' %}" method="post">
                         {% csrf_token %}
 
-                        <label for="type-offre-select">Choisir un type d'offre :</label>
-                    <select name="type_offre" required>
-                        <option value="">Sélectionner une option</option>
-                        {% for type_offre in types_offres %}
-                        <option value="{{ type_offre.id }}">{{ type_offre.nom }} - {{ type_offre.prix }}€</option>
-                        {% endfor %}
-                    </select>
+                        <!--Champ caché pour l'ID de l'offre-->
+                        <input type="hidden" name="offre_id" value="{{ offre.id }}">
 
-                    <label for="date-select-{{ offre.id }}">Choisir une date :</label>
-                    <select name="evenement_id" required>
-                        <option value="">Sélectionner une date</option>
-                        {% for evenement in evenements %}
-                            {% if evenement.offre.id == offre.id %}
-                                <option value="{{ evenement.id }}">{{ evenement.date }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
+                        <!--Sélection du type d'offre-->
+                        <label for="type-offre-select-{{ offre.id }}">Choisir un type d'offre :</label>
+                        <select id="type-offre-select-{{ offre.id }}" name="type_offre" required>
+                            <option value="">Sélectionner une option</option>
+                            {% for type_offre in types_offres %}
+                            <option value="{{ type_offre.id }}">{{ type_offre.nom }} - {{ type_offre.prix }}€</option>
+                            {% endfor %}
+                        </select>
 
-                    <input type="hidden" name="offre_id" value="{{ offre.id }}">
-                    <button type="submit">Ajouter au panier</button>
+                        <!--Sélection de la date de l'évènement-->
+                        <label for="date-select-{{ offre.id }}">Choisir une date :</label>
+                        <select id="date-select-{{ offre.id }}" name="evenement_id" required>
+                            <option value="">Sélectionner une date</option>
+                            {% for evenement in evenements %}
+                                {% if evenement.offre.id == offre.id %}
+                                    <option value="{{ evenement.id }}">{{ evenement.date }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+
+                        <button type="submit">Ajouter au panier</button>
 
                     </form>
                 </div>
