@@ -41,7 +41,7 @@
                     <img src="{{ offre.image.url }}" alt="{{ offre.titre }}">
                     <p>{{ offre.description }}</p>
 
-                    <form id="ajouter-panier-form-{{ offre.id }}" method="post" onsubmit="event.preventDefault(); ajouterAuPanier('{{ offre.id }}');">
+                    <form id="ajouter-panier-form-{{ offre.id }}" action="{% url 'ajouter_au_panier' offre.id %}" method="post">
                         {% csrf_token %}
 
                         <!--Champ caché pour l'ID de l'offre-->

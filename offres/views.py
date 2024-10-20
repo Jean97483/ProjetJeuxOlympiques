@@ -1,4 +1,5 @@
 #myapp/views.py
+from pyexpat.errors import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
@@ -10,6 +11,10 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
+
+import logging
+
+logger = logging.getLogger(__name___)
 
 
 #Vue pour l'inscription
@@ -72,7 +77,7 @@ def panier(request):
 
 
 @require_POST # Assure que la requête est de type POST
-def ajouter_au_panier(request, offre_id, evenement_id, type_offre_id):
+def ajouter_au_panier(request, offre_id):
     try:
         #Extraire les données du formulaire POST
         offre_id = request.POST.get('offre_id')
@@ -114,9 +119,13 @@ def ajouter_au_panier(request, offre_id, evenement_id, type_offre_id):
             #Mettre à jour la session
             request.session['panier'] = panier
 
-        return JsonResponse({'success': True, 'message': 'Ajouté au panier'})
+        # Ajout du message de confirmation
+        messages.success(request, "L'offre a été ajoutée au panier!!")
+        return redirect('evenement')
+    
     except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
+        messages.error(request, f"Erreur : {str(e)}")
+        return redirect('evenement')
 
 @login_required
 def supprimer_du_panier(request, panier_item_id):
