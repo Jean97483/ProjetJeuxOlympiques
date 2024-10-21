@@ -48,7 +48,7 @@
                     <img src="{{ offre.image.url }}" alt="{{ offre.titre }}">
                     <p>{{ offre.description }}</p>
 
-                    <form id="ajouter-panier-form-{{ offre.id }}" action="{% url 'ajouter_au_panier' %}" method="post">
+                    <form action="{% url 'ajouter_au_panier' %}" method="post">
                         {% csrf_token %}
 
                         <!--Champ caché pour l'ID de l'offre-->
@@ -74,7 +74,7 @@
                             {% endfor %}
                         </select>
 
-                        <button type="button" onclick="ajouterAuPanier('{{ offre.id }}')">Ajouter au panier</button>
+                        <button type="submit">Ajouter au panier</button>
 
                     </form>
                 </div>
