@@ -77,6 +77,10 @@ def panier(request):
 @require_POST # Assure que la requête est de type POST
 def ajouter_au_panier(request, offre_id, evenement_id, type_offre_id):
     try:
+        # Extraire les données du formulaire POST
+        offre_id = request.POST.get('offre_id')
+        evenement_id = request.POST.get('evenement_id')
+        type_offre_id = request.POST.get('type_offre')
 
         # Vérifier les objets liés aux IDs
         offre = get_object_or_404(Offre, id=offre_id)
