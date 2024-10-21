@@ -56,9 +56,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     console.log("réponse du serveur:", data);
                     if (data.success) {
-                        alert("L'offre a été ajoutée au panier.");
+                        afficherPopUp("L'offre a été ajoutée au panier.");
                         //Mettre à jour l'interface utilisateur si nécessaire
-                        ajouterAuPanierClient(offreId, selectedTypeOffre);
+                        ajouterAuPanierClient(data.offreId, data.offreTitre, data.evenementDate, data.typeOffreNom);
                     } else {
                         alert(data.message || "Erreur lors de l'ajout au panier.");
                     }
@@ -69,15 +69,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Fonction pour afficher un pop-up de confirmation
+    function afficherPopUp(message) {
+        const popup = document.createElement('div');
+        popup.className = 'popup-message';
+        popup.innerHTML = `
+            <div class="popup-content">
+                <p>${message}</p>
+                <button onclick="fermerPopUp()">Fermer</button>
+            </div>
+        `;
+        document.body.appendChild(popup);
+    }
+
+    function fermerPopUp() {
+        const popup = document.querySelector('.popup-message');
+        if (popup) {
+            popup.remove();
+        }
+    }
+
     //Fonction pour gérer l'ajout coté client
-    function ajouterAuPanierClient(offreId, offreTitre, sportNom) {
-        var dateSelect = document.getElementById('date-select-' + offreId);    
-        var panierList = document.getElementById('panier-liste');
+    function ajouterAuPanierClient(offreId, offreTitre, evenementDate, typeOffreNom) {    
+        var panierList = document.querySelector('.panier ul');
             if (panierList) {
                 var li = document.createElement('li');
                 li.setAttribute('data-offre-id', offreId);
-                li.setAttribute('data-date-id', selectedDate);
-                li.textContent = offreTitre + ' - ' + sportNom + ' - ' + dateSelect.options[dateSelect.selectedIndex].text;
+                li.textContent = `${offreTitre} - ${evenementDate} - ${typeOffreNom}`;
 
                 var removeButton = document.createElement('button');
                 removeButton.textContent = 'Supprimer';
@@ -115,6 +133,8 @@ document.addEventListener('DOMContentLoaded', function () {
         updateTotal();
     }
 
+    window.ajouterAuPanier = ajouterAuPanier;
+
     function updateTotal() {
         var total = 0;
         var panierList = document.getElementById('panier-liste');
@@ -127,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    window.ajouterAuPanier = ajouterAuPanier;
+    
     window.validerCommande = function () {
         fetch('/valider_commande/', {
             method: 'GET',
