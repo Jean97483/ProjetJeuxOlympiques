@@ -12,6 +12,12 @@ from django.http import JsonResponse, HttpResponseRedirect, HttpResponseBadReque
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from django.core.mail import send_mail
+import qrcode
+from io import BytesIO
+from django.core.files import File
+from django.core.files.base import ContentFile
+from PIL import Image
 
 
 
@@ -146,3 +152,69 @@ def valider_commande(request):
     
     #Si le panier n'est pas vide, rediriger vers la page panier
     return JsonResponse({'success': True, 'redirect_url': reverse('panier')})
+
+@login_required
+@require_POST
+def proceder_paiement(request):
+    panier_items = Panier.objects.filter(user=request.user)
+
+    if not panier_items.exists():
+        return JsonResponse({'success': False, 'message': 'Votre panier est vide.'})
+    
+    #Simulation du paiement
+    try:
+        #Marquer les articles comme réservés ou payés
+        for item in panier_items:
+            item.payé = True
+            item.save()
+
+        #Générer un e-ticket et envoyer par mail
+        generate_and_send_etickets(request.user, panier_items)
+
+        # Vider le panier après paiement
+        panier_items.delete()
+
+        return JsonResponse({'success': True, 'redirect_url': reverse('confirmation')})
+    
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f"Erreur lors du paiement : {str(e)}"})
+    
+
+def generate_and_send_etickets(user, panier_items):
+    for item in panier_items:
+        #Créer un QR Code pour l'e-ticket
+        qr = qrcode.make(f"{item.id}-{item.user.id}-{item.offre.titre}")
+        qr_bytes = BytesIO()
+        qr.save(qr_bytes, format='PNG')
+
+        # Sauvegarder le QR Code comme fichier image
+        qr_code = ContentFile(qr_bytes.getvalue())
+        filename = f"eticket-{item.id}.png"
+
+        #Envoyer l'e-ticket par email (en pièce jointe)
+        subject = 'Votre E-ticket pour les Jeux Olympiques'
+        message = f"Merci pour votre achat {user.username}. Voici votre e-ticket pour {item.offre.titre}."
+        send_mail(
+            subject,
+            message,
+            'votre-email@example.com',
+            [user.email],
+            fail_silently=False,
+            html_message=message,
+        )
+
+@login_required
+def scanner_ticket(request):
+    if request.method == 'POST':
+        qr_code_data = request.POST.get('qr_code_data')
+        try:
+            # Vérifier l'authenticité du QR code en le comparant à la base de données
+            item_id, user_id, offre_titre = qr_code_data.split('-')
+            item = Panier.objects.get(id=item_id, user__id=user_id)
+            if item and item.payé:
+                return JsonResponse({'success': True, 'message': 'E-ticket valide !'})
+            else: 
+                return JsonResponse({'success': False, 'message': 'E-ticket invalide ou non payé!'})
+        except Exception:
+            return JsonResponse({'success': False, 'message': 'Erreur lors de la vérification du ticket.'})
+        

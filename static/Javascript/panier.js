@@ -1,20 +1,22 @@
-function validerCommande() {
-    fetch('/valider_commande/', {
-        method: 'GET',
+document.getElementById('proceder-paiement').addEventListener('click', function() {
+    fetch('/proceder_paiement/', {
+        method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
         }
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            //Redirige vers la page de paiement
-            window.location.href = '/paiement/';
+            alert("Paiement réussi ! Votre e-ticket a été envoyé.");
+            window.location.href = data.redirect_url;
         } else {
-            alert(data.message); //Message si le panier est vide
+            alert(data.message);
         }
     })
     .catch(error => {
-        console.error('Erreur lors de la validation de la commande :', error);
+        console.error("Erreur lors du paiement :, error");
+        alert("Erreur lors du paiement. Veuillez réessayer.");
     });
-}
+});
