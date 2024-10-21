@@ -70,17 +70,13 @@ def panier(request):
             evenement = get_object_or_404(Evenement, id=value['evenement_id'])
             quantite = value['quantite']
             total += offre.prix * quantite
-            panier_items.append({'offre': offre, 'evenement': evenement, 'quantite': quantite})
+            panier_items.append({'offre': offre, 'quantite': quantite})
     return render(request, 'panier.html', {'panier_items': panier_items, 'total': total})
 
 
 @require_POST # Assure que la requête est de type POST
-def ajouter_au_panier(request, offre_id):
+def ajouter_au_panier(request, offre_id, evenement_id, type_offre_id):
     try:
-        #Extraire les données du formulaire POST
-        offre_id = request.POST.get('offre_id')
-        evenement_id = request.POST.get('evenement_id')
-        type_offre_id = request.POST.get('type_offre_id')
 
         # Vérifier les objets liés aux IDs
         offre = get_object_or_404(Offre, id=offre_id)
@@ -102,12 +98,11 @@ def ajouter_au_panier(request, offre_id):
         else:
             # Utilisateur non conecté - utiliser le session ID comme identifiant unique
             panier = request.session.get('panier', {})
-            key = f"{offre_id}-{evenement_id}"
 
-            if key in panier:
-                panier[key]['quantite'] += 1
+            if str(offre_id) in panier:
+                panier[str(offre_id)]['quantite'] += 1
             else:
-                panier[key] = {
+                panier[str(offre_id)] = {
                     'offre_id': offre_id,
                     'evenement_id': evenement_id,
                     'quantite': 1,
@@ -116,10 +111,6 @@ def ajouter_au_panier(request, offre_id):
             
             #Mettre à jour la session
             request.session['panier'] = panier
-
-        # Ajout du message de confirmation
-        messages.success(request, "L'offre a été ajoutée au panier !")
-        return redirect('evenement')
     
     except Exception as e:
         messages.error(request, f"Erreur : {str(e)}")
@@ -127,7 +118,7 @@ def ajouter_au_panier(request, offre_id):
 
 @login_required
 def supprimer_du_panier(request, panier_item_id):
-    panier_item = Panier.objects.get(id=panier_item_id)
+    panier_item = get_object_or_404(Panier, id=panier_item_id)
     if panier_item.user == request.user:
         panier_item.delete()
     return redirect('panier')
