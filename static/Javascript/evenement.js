@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (selectedDate) {
             //Envoyer une requête AJAX au serveur pour ajouter l'élément au panier
-            fetch(`/ajouter_au_panier/${offreId}/${selectedDate}/${selectedTypeOffre}/`, {
+            fetch(`/ajouter_au_panier/`, {
                 method: 'POST', //Utilisation de la methode post pour plus de sécurité
                 headers: {
                     'Content-Type': 'application/json',

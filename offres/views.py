@@ -1,4 +1,5 @@
 #myapp/views.py
+import json
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
@@ -77,9 +78,10 @@ def panier(request):
 def ajouter_au_panier(request, offre_id):
     try:
         #Extraire les données du formulaire POST
-        offre_id = request.POST.get('offre_id')
-        evenement_id = request.POST.get('evenement_id')
-        type_offre_id = request.POST.get('type_offre')
+        data = json.loads(request.body)
+        offre_id = data.get('offreId')
+        evenement_id = data.get('evenementId')
+        type_offre_id = data.get('typeOffreId')
 
         # Vérifier les objets liés aux IDs
         offre = get_object_or_404(Offre, id=offre_id)
@@ -94,7 +96,7 @@ def ajouter_au_panier(request, offre_id):
                 offre=offre, 
                 evenement=evenement,
                 defaults={'quantite': 1, 'prix': type_offre.prix}
-                )
+            )
             if not created:
                 panier_item.quantite += 1
                 panier_item.save()
@@ -116,13 +118,10 @@ def ajouter_au_panier(request, offre_id):
             #Mettre à jour la session
             request.session['panier'] = panier
 
-        # Ajout du message de confirmation
-        messages.success(request, "L'offre a été ajoutée au panier!!")
-        return redirect('evenement')
+        return JsonResponse({'success': True, 'message': "L'offre a été ajoutée au panier"})
     
     except Exception as e:
-        messages.error(request, f"Erreur : {str(e)}")
-        return redirect('evenement')
+        return JsonResponse({'success': False, 'message': f"Erreur : {str(e)}"})
 
 @login_required
 def supprimer_du_panier(request, panier_item_id):
