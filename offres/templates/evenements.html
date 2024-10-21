@@ -83,10 +83,19 @@
         </section>
         <section class="panier">
             <h2>Votre Panier</h2>
-            <ul id="panier-liste">
-                <!-- Les billets du panier sont ajoutés ici dynamiquement -->
-            </ul>
-            <div class="total">Total : <span id="panier-total">0</span>€</div>
+            {% if panier_items %}
+                <ul>
+                    {% for item in panier_items %}
+                    <li>
+                        {{ item.offre.titre }} - {{ item.evenement.date }} - Quantité : {{ item.quantite }}
+                        <a href="{% url 'supprimer_du_panier' item.id %}">Supprimer</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Votre panier est vide.</p>
+            {% endif %}
+            <div class="total">Total: {{ total }}€</div>
             <button class="valider" onclick="validerCommande()">Valider la commande</button>
         </section>
     </main>
