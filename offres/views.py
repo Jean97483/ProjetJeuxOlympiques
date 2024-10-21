@@ -8,7 +8,7 @@ from .models import Offre, Sport, Evenement, Panier, TypeOffre
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
@@ -82,6 +82,11 @@ def ajouter_au_panier(request):
         evenement_id = request.POST.get('evenement_id')
         type_offre_id = request.POST.get('type_offre')
 
+        # Vérification que tous les champs sont présents
+        if not (offre_id and evenement_id and type_offre_id):
+            messages.error(request, "Informations manquantes pour ajouter au panier.")
+            return HttpResponseRedirect(reverse('evenement'))
+
         # Vérifier les objets liés aux IDs
         offre = get_object_or_404(Offre, id=offre_id)
         evenement = get_object_or_404(Evenement, id=evenement_id)
@@ -115,10 +120,15 @@ def ajouter_au_panier(request):
             
             #Mettre à jour la session
             request.session['panier'] = panier
+
+        # Ajout du message de confirmation
+        messages.success(request, "L'offre a été ajoutée au panier !")
+        return HttpResponseRedirect(reverse('evenement'))
     
     except Exception as e:
-        messages.error(request, f"Erreur : {str(e)}")
-        return redirect('evenement')
+        # Capture d'erreur plus spécifique et retour à la page événements
+        messages.error(request, f"Erreur lors de l'ajout au panier : {str(e)}")
+        return HttpResponseRedirect(reverse('evenement'))
 
 @login_required
 def supprimer_du_panier(request, panier_item_id):
