@@ -23,7 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // écouteur d'évènement pour le boutton
-    document.getElementById('proceder-paiement').addEventListener('click', procederAuPaiement);
+    const boutonPaiement = document.getElementById('proceder-paiement');
+    if (boutonPaiement) {
+        boutonPaiement.addEventListener('click', procederAuPaiement);
+    } else {
+        console.error("Le bouton 'Procéder au paiement' n'a pas été trouvé sur la page.");
+    }
 });
 
 function getCookie(name) {
