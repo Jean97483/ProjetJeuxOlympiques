@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simuler le paiement</title>
+</head>
+<body>
+    <h1>Simuler le paiement pour {{ offre.nom }}</h1>
+    <div>
+        <p>Voici votre QR Code pour le billet :</p>
+        <div>{{ svg_data|safe }}</div>
+    </div>
+    <a href="{% url 'accueil' %}">Retour à l'accueil</a>
+</body>
+</html>

@@ -40,11 +40,64 @@
             <p>Votre panier est vide.</p>
         {% endif %}
         <div class="total">Total: {{ total }}€</div>
-        <button id="proceder-paiement" class="valider">Procéder au paiement</button>
+
+        <form id="payment_form" action="{% url 'simulate_payment' %}" method="post">
+            {% csrf_token %}
+            <button class="valider" type="submit" onclick="simulerPaiement()">Procéder au paiement</button>
+        </form>
+
+
+        <!--
+
+            <button id="proceder-paiement" class="valider">Procéder au paiement</button>
+        -->
+
+        
     </main>
     <footer>
         <p>&copy: 2024 Jeux Olympiques. Tous droits réservés.</p>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var panierList = document.getElementById('panier-liste');
+            var billets =JSON.parse(localStorage.getItem('panier')) || [];
+            billets.forEach(function(billet) {
+                var li = document.createElement('li');
+                li.textContent = billet.offreTitre + ' - ' + billet.sportNom + ' - ' + billet.date + ' - ' + billet.typeOffre + ' - ' + billet.offrePrix + ' €';
+                
+                var removeButton = document.createElement('a');
+                removeButton.textContent = 'Supprimer';
+                removeButton.href = '#';
+                removeButton.onclick = function() {
+                    panierList.removeChild(li);
+                    updateTotal();
+                };
+                li.appendChild(removeButton);
+                panierList.appendChild(li);
+            });
+            updateTotal();
+                
+            });
+        
+        function updateTotal() {
+        var total = 0;
+        var panierList = document.getElementById('panier-liste');
+        if (panierList) {
+            var items = panierList.getElementsByTagName('li');
+            total = items.length;
+            document.getElementById('panier-total').textContent = total;
+        } else {
+            console.error('Panier non trouvé.')
+        }
+    }
+
+        function simulerPaiement() {
+            //Simulation du paiement
+            alert('Paiement simulé avec succès ! Merci pour votre achat !');
+            localStorage.removeItem('panier');
+            document.getElementById('payment-form').submit();
+        }
+    </script>
     <script src="{% static 'Javascript/panier.js' %}"></script>
 </body>
 </html>

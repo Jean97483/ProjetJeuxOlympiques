@@ -82,13 +82,31 @@
                 {% endfor %}
             </div>     
         </section>
+
         <section class="panier">
-            <button class="valider" onclick="validerCommande()">Voir mon panier</button>
+            <h2>Votre Panier</h2>
+            <ul id="panier-liste">
+                <!-- Les billets du panier sont ajoutés ici dynamiquement -->
+            </ul>
+            <div class="total">Total : <span id="panier-total">0</span>€</div>
+            {% if user.is_authenticated %}
+                <button class="valider" onclick="window.location.href=`{% url 'panier' %}`">Valider la commande</button>
+            {% else %}
+                <button class="valider" onclick="alert('Afin de terminer votre achat, merci de bien vouloir vous connecter !')">Valider la commande</button>
+            {% endif %}                
         </section>
+
+
+        <!--<section class="panier">
+            <button class="valider" onclick="validerCommande()">Voir mon panier</button>
+        </section>-->
     </main>
     <footer>
         <p>&copy; 2024 Jeux Olympiques. Tous droits réservés.</p>
     </footer>
     <script src="{% static 'Javascript/evenement.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
