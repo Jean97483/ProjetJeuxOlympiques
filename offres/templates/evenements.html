@@ -83,21 +83,7 @@
             </div>     
         </section>
         <section class="panier">
-            <h2>Votre Panier</h2>
-            {% if panier_items %}
-                <ul>
-                    {% for item in panier_items %}
-                    <li>
-                        {{ item.offre.titre }} - {{ item.evenement.date }} - Quantité : {{ item.quantite }}
-                        <a href="{% url 'supprimer_du_panier' item.id %}">Supprimer</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>Votre panier est vide.</p>
-            {% endif %}
-            <div class="total">Total: {{ total }}€</div>
-            <button class="valider" onclick="validerCommande()">Valider la commande</button>
+            <button class="valider" onclick="validerCommande()">Voir mon panier</button>
         </section>
     </main>
     <footer>
