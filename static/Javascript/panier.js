@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error("Erreur lors du paiement :, error");
+            console.error("Erreur lors du paiement :", error);
             alert("Erreur lors du paiement. Veuillez réessayer.");
         });
     }

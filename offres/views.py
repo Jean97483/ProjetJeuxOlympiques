@@ -219,3 +219,33 @@ def scanner_ticket(request):
         except Exception:
             return JsonResponse({'success': False, 'message': 'Erreur lors de la vérification du ticket.'})
         
+
+
+@login_required
+@require_POST
+def mock_proceder_paiement(request):
+    panier_items = Panier.objects.filter(user=request.user)
+
+    if not panier_items.exists():
+        return JsonResponse({'success': False, 'message': 'Votre panier est vide.'})
+    
+    # Simulation du paiement
+    try:
+        # Marquer les articles comme réservés ou payés
+        for item in panier_items:
+            item.payé = True
+            item.save()
+
+        # Générer un e-ticket et envoyer par mail
+        generate_and_send_etickets(request.user, panier_items)
+
+        # Vider le panier après paiement
+        panier_items.delete()
+
+        # Simuler un paiement réussi avec un message de succès
+        return JsonResponse({'success': True, 'redirect_url': reverse('confirmation')})
+    
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f"Erreur lors du paiement : {str(e)}"})
+
+        
