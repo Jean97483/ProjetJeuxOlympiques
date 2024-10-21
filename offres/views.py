@@ -21,6 +21,7 @@ from PIL import Image
 
 
 
+
 #Vue pour l'inscription
 def register(request):
     if request.method == 'POST':
